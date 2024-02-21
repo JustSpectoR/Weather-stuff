@@ -1,0 +1,26 @@
+---
+- name: Lab 1
+  hosts: localhost
+  become: true
+  become_method: sudo
+
+  tasks:
+  - name: Install nmap
+    apt:
+      name: nmap
+      state: latest
+      force: yes
+
+  - name: Copy task list
+    copy:
+      src: ./targets.txt
+      dest: ~/targets.txt
+      mode: '0644'
+
+  - name: Launch nmap -iL targets.txt
+    shell: "nmap -iL ~/targets.txt -p 80 -oG -"
+    register: nmap_result
+
+  - name: Collect results
+    debug:
+      msg: "{{ nmap_result.stdout_lines }}"
