@@ -1,26 +1,16 @@
 ---
-- name: Lab 1
+- name: Install nginx with hosts
   hosts: localhost
+  remote_user: runner
   become: true
   become_method: sudo
+  gather_facts: no
 
-  tasks:
-  - name: Install nmap
-    apt:
-      name: nmap
-      state: latest
-      force: yes
+  vars:
+    sites:
+    - "site1.com"
+    - "site2.com"
+    - "site3.com"
 
-  - name: Copy task list
-    copy:
-      src: ./targets.txt
-      dest: ~/targets.txt
-      mode: '0644'
-
-  - name: Launch nmap -iL targets.txt
-    shell: "nmap -iL ~/targets.txt -p 80 -oG -"
-    register: nmap_result
-
-  - name: Collect results
-    debug:
-      msg: "{{ nmap_result.stdout_lines }}"
+  roles:
+  - "role1"
